@@ -1,0 +1,46 @@
+.ticket-list .ticket {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	background: white;
+	border-left: 5px solid #3490dc;
+	margin-bottom: 1rem;
+	padding: 1rem 1.5rem;
+	border-radius: 6px;
+	box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+	gap: 2rem;
+}
+
+.ticket-list .ticket-info {
+	flex: 1;
+	min-width: 0;
+}
+
+.ticket-list .ticket-info .ticket-title {
+	margin: 0;
+	font-size: 1.2rem;
+}
+
+.ticket-list .ticket-info .ticket-desc {
+	margin-top: 0.5rem;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.ticket-status {
+	text-transform: uppercase;
+	font-weight: bold;
+	font-size: 1.5rem;
+}
+.ticket-status.open {
+	color: green;
+}
+.ticket-status.in_progress {
+	color: blue;
+}
+.ticket-status.closed {
+	color: red;
+}
+
+

@@ -1,0 +1,43 @@
+header {
+	background: #6040aa;
+	color: white;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding-inline: 2rem;
+}
+.logo h1 {
+	margin-block: 1rem;
+}
+
+.user-info {
+	display: flex;
+	align-items: center;
+	gap: 1rem;
+	font-size: 1rem;
+	text-decoration: none;
+}
+.user-info .name {
+	font-weight: bold;
+}
+.user-info .btn {
+	background: transparent;
+	border: 1px solid white;
+	color: white;
+	padding: 0.3rem 0.8rem;
+	border-radius: 4px;
+	cursor: pointer;
+	font-size: 12px;
+}
+
+.user-info .btn.new-ticket {
+	background-color: green;
+}
+.user-info .btn.new-ticket:hover {
+	background: white;
+	color: green;
+}
+
+.user-info .btn.logout:hover {
+	background: red;
+}

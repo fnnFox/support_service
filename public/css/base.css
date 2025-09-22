@@ -1,0 +1,23 @@
+* {
+	font-family: sans-serif;
+}
+
+a {
+	text-decoration: none;
+	color: inherit;
+	display: block;
+}
+
+body {
+	background: #e0e0e0;
+	margin: 0;
+}
+
+main {
+	padding: 2rem;
+}
+
+.title {
+	margin: 0rem 1rem 1rem 1rem;
+}
+
