@@ -1,17 +1,34 @@
 @extends('layout')
 
 @section('content')
-	<div class="ticket-list">
-		<div class="title">
-			<h2 class="title-text">Мои заявки</h2>
+	<div class="header-container">
+		<h2 class="page-title">Мои заявки</h2>
+		<div class="controls-container">
 			<div class="sort-options">
-				<span>Сортировать по дате:</span>
-				<a href="{{ route('tickets.index', ['sort' => 'asc']) }}" class="{{ $direction === 'asc' ? 'active' : '' }}">По возрастанию</a>
+				<span>Сортировать:</span>
+				<a href="{{ route('tickets.index', array_merge(request()->query(), ['sortBy' => 'created_at'])) }}"
+				   class="{{ $sortBy === 'created_at' ? 'active' : '' }}">По дате</a>
 				<span>|</span>
-				<a href="{{ route('tickets.index', ['sort' => 'desc']) }}" class="{{ $direction === 'desc' ? 'active' : '' }}">По убыванию</a>
+				<a href="{{ route('tickets.index', array_merge(request()->query(), ['sortBy' => 'priority'])) }}"
+				   class="{{ $sortBy === 'priority' ? 'active' : '' }}">По приоритету</a>
+
+				<div class="direction-options">
+					<a href="{{ route('tickets.index', array_merge(request()->query(), ['direction' => 'asc'])) }}"
+					   class="{{ $direction === 'asc' ? 'active' : '' }}">▲</a>
+					<a href="{{ route('tickets.index', array_merge(request()->query(), ['direction' => 'desc'])) }}"
+					   class="{{ $direction === 'desc' ? 'active' : '' }}">▼</a>
+				</div>
+			</div>
+			<div class="status-filter">
+				<input type="checkbox" id="show-closed"
+					   onchange="window.location.href = this.checked ? '{{ route('tickets.index', array_merge(request()->query(), ['closed' => '1'])) }}' : '{{ route('tickets.index', array_merge(request()->query(), ['closed' => null])) }}'"
+					   {{ $showClosed ? 'checked' : '' }}>
+				<label for="show-closed">Показывать закрытые заявки</label>
 			</div>
 		</div>
+	</div>
 
+	<div class="ticket-list">
 		@if ($tickets->isEmpty())
 			<p>Заявок нет.</p>
 		@else

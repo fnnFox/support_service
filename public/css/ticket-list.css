@@ -1,3 +1,6 @@
+.ticket-list {
+
+}
 .ticket-list .ticket {
 	display: flex;
 	justify-content: space-between;
@@ -33,6 +36,10 @@
 	font-weight: bold;
 	font-size: 1.5rem;
 }
+
+/*
+ * Цвета для статусов заявок
+ */
 .ticket-status.open {
 	color: green;
 }
@@ -43,4 +50,49 @@
 	color: red;
 }
 
+/*
+ * Новые стили для заголовка и элементов управления (сортировка, фильтры)
+ */
+.header-container {
+	display: block;
+	margin-bottom: 1.5rem;
+}
 
+.page-title {
+	font-size: 1.8rem;
+	margin: 0;
+	margin-bottom: 1rem;
+}
+
+.controls-container {
+	display: flex;
+	gap: 1.5rem;
+	align-items: center;
+	flex-wrap: wrap;
+}
+
+.sort-options,
+.status-filter {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+}
+
+/*
+ * Стили для ссылок сортировки и их состояний
+ */
+.sort-options a {
+	color: #007bff;
+	text-decoration: none;
+	font-weight: 500;
+}
+
+.sort-options a.active {
+	font-weight: bold;
+	color: #333;
+}
+
+.direction-options {
+	display: flex;
+	gap: 0.2rem;
+}

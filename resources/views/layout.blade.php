@@ -21,7 +21,9 @@
 			<div class="user-info">
 				@auth
 				<span>{{ auth()->user()->role }}{{ auth()->user()->id }}</span>
+				@if (auth()->user()->isUser())
 				<a href="{{ route('tickets.create') }}" class="btn new-ticket">Новая заявка</a>
+				@endif
 				<span class="name">{{ auth()->user()->name }} {{ auth()->user()->surname }}</span>
 				<form method="POST" action="{{ route('logout') }}">
 					@csrf

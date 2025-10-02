@@ -27,6 +27,7 @@ class AuthController extends Controller
 	}
 
 	public function logout(Request $request) {
+		// if (!Auth::check()) return redirect('/');
 		Auth::logout();
 		$request->session()->invalidate();
 		$request->session()->regenerateToken();

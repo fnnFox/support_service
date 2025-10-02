@@ -5,40 +5,69 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Ticket;
+use App\Models\User;
 
 class TicketController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index(Request $request)
+	/**
+	 * Display a listing of the resource.
+	 */
+	public function index(Request $request)
 	{
-		$direction = $request->get('sort', 'desc');
+		$user = Auth::user();
 
-		if (!in_array($direction, ['asc', 'desc'])) {
+		// Получаем параметры из запроса. По умолчанию - сортировка по дате по убыванию, без закрытых заявок.
+		$sortBy = $request->get('sortBy', 'created_at');
+		$direction = $request->get('direction', 'desc');
+		$showClosed = $request->has('closed'); // Проверяем наличие параметра 'closed'
+
+		// Проверяем, что параметры сортировки корректны
+		if (!in_array($sortBy, ['created_at', 'priority']))
+		{
+			$sortBy = 'created_at';
+		}
+		if (!in_array($direction, ['asc', 'desc']))
+		{
 			$direction = 'desc';
 		}
 
-		$tickets = Ticket::where('created_by', Auth::id())
-			->orderBy('created_at', $direction)
-			->get();
+		// Получаем все заявки, если пользователь - техник или админ, иначе - только его
+		$query = ($user->isTech() || $user->isAdmin()) ? Ticket::query() : $user->createdTickets();
 
-		return view('tickets.index', compact('tickets', 'direction'));
-    }
+		// Если параметр 'closed' не указан, добавляем фильтр по статусу
+		if (!$showClosed)
+		{
+			$query->where('status', '!=', 'Закрыта');
+		}
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
+		// Применяем сортировку
+		$query->orderBy($sortBy, $direction);
+
+		// Добавляем дополнительную сортировку по дате, если основная сортировка не по ней
+		if ($sortBy !== 'created_at')
+		{
+			$query->orderBy('created_at', 'desc');
+		}
+
+		$tickets = $query->get();
+
+		// Передаем данные в представление
+		return view('tickets.index', compact('tickets', 'sortBy', 'direction', 'showClosed'));
+	}
+
+	/**
+	 * Show the form for creating a new resource.
+	 */
+	public function create()
+	{
 		return view('tickets.create');
-    }
+	}
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
+	/**
+	 * Store a newly created resource in storage.
+	 */
+	public function store(Request $request)
+	{
 		$data = $request->validate([
 			'title' => 'required|string',
 			'description' => 'required|string',
@@ -48,37 +77,73 @@ class TicketController extends Controller
 		$data['created_by'] = auth()->id();
 		Ticket::create($data);
 		return redirect()->route('tickets.index')->with('success','Заявка создана');
-    }
+	}
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Ticket $ticket)
+	/**
+	 * Display the specified resource.
+	 */
+	public function show(Ticket $ticket)
 	{
 		return view('tickets.show', compact('ticket'));
 	}
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
+	/**
+	 * Show the form for editing the specified resource.
+	 */
+	public function edit(Ticket $ticket)
+	{
+		// Проверка прав: пользователь должен быть техником ИЛИ администратором ИЛИ создателем заявки.
+		$user = Auth::user();
+		if (!($user->isTech() || $user->isAdmin() || $user->id === $ticket->created_by)) {
+			abort(403, 'У вас нет прав для редактирования заявок.');
+		}
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
+		$techs = User::where('role', 'tech')->get();
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
+		return view('tickets.edit', compact('ticket', 'techs'));
+	}
+
+	public function update(Request $request, Ticket $ticket)
+	{
+		// Проверка прав: пользователь должен быть техником ИЛИ администратором ИЛИ создателем заявки.
+		$user = Auth::user();
+		if (!($user->isTech() || $user->isAdmin() || $user->id === $ticket->created_by)) {
+			abort(403, 'У вас нет прав для обновления заявок.');
+		}
+
+		$validated = $request->validate([
+			'status' => 'required|in:open,in_progress,closed',
+			'priority' => 'required|in:low,medium,high',
+			'assigned_to' => 'nullable|exists:users,id',
+		]);
+
+		$ticket->update($validated);
+
+		return redirect()->route('tickets.show', $ticket)
+						 ->with('success', 'Заявка успешно обновлена!');
+	}
+
+	/**
+	 * Remove the specified resource from storage.
+	 */
+	public function destroy(string $id)
+	{
+		//
+	}
+	public function assign(Ticket $ticket)
+	{
+		$this->authorize('assign', $ticket);
+		$user = auth()->user();
+		if ($user->isTech() && !$ticket->assigned_to) {
+			$ticket->update(['assigned_to' => $user->id]);
+			return redirect()->route('tickets.show', $ticket)
+							 ->with('success', 'Вы успешно назначили себя на эту заявку.');
+		}
+		return redirect()->back()->with('error', 'Не удалось назначить.');
+	}
+
+	public function __construct()
+	{
+		$this->authorizeResource(\App\Models\Ticket::class, 'ticket');
+	}
 }

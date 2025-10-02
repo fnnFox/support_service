@@ -38,15 +38,20 @@ class User extends Authenticatable
 		return $this->name . ' ' . $this->surname;
 	}
 
-	// public function isAdmin(): bool {
-	// 	return $this->role === 'admin';
-	// }
-	// public function isTech(): bool {
-	// 	return $this->role === 'tech';
-	// }
-	// public function isUser(): bool {
-	// 	return $this->role === 'user';
-	// }
+    public function isAdmin(): bool
+    {
+        return $this->role === 'admin';
+    }
+
+    public function isTech(): bool
+    {
+        return $this->role === 'tech';
+    }
+
+    public function isUser(): bool
+    {
+        return $this->role === 'user';
+    }
 
 	public function chatMessages() {
 		return $this->hasMany(ChatMessage::class);

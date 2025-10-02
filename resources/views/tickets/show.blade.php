@@ -20,6 +20,13 @@
 			<p><strong>Создано:</strong> {{ $ticket->created_at->format('d.m.Y H:i') }}</p>
 		</div>
 
+		{{-- Кнопка "Изменить" видна только техникам и администраторам --}}
+		@if (auth()->check() && (auth()->user()->isTech() || auth()->user()->isAdmin()))
+			<div class="ticket-actions">
+				<a href="{{ route('tickets.edit', $ticket) }}" class="button button-edit">Изменить</a>
+			</div>
+		@endif
+
 		<hr>
 	</div>
 @endsection
