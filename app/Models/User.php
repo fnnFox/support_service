@@ -7,13 +7,6 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-enum UserType: string
-{
-	case User = 'user';
-	case Tech = 'tech';
-	case Admin = 'admin';
-}
-
 class User extends Authenticatable
 {
 	use HasFactory, Notifiable;
