@@ -18,7 +18,7 @@ class AuthController extends Controller
 
 		if (Auth::attempt($credentials)) {
 			$request->session()->regenerate();
-			return redirect('/tickets');
+			return redirect('/');
 		}
 
 		return back()->withErrors([
@@ -27,7 +27,6 @@ class AuthController extends Controller
 	}
 
 	public function logout(Request $request) {
-		// if (!Auth::check()) return redirect('/');
 		Auth::logout();
 		$request->session()->invalidate();
 		$request->session()->regenerateToken();
