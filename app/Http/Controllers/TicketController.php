@@ -19,7 +19,7 @@ class TicketController extends Controller
 		// Получаем параметры из запроса. По умолчанию - сортировка по дате по убыванию, без закрытых заявок.
 		$sortBy = $request->get('sortBy', 'created_at');
 		$direction = $request->get('direction', 'desc');
-		$showClosed = $request->has('closed'); // Проверяем наличие параметра 'closed'
+		$showClosed = $request->boolean('closed'); // Проверяем наличие параметра 'closed'
 
 		// Проверяем, что параметры сортировки корректны
 		if (!in_array($sortBy, ['created_at', 'priority']))
@@ -37,7 +37,7 @@ class TicketController extends Controller
 		// Если параметр 'closed' не указан, добавляем фильтр по статусу
 		if (!$showClosed)
 		{
-			$query->where('status', '!=', 'Закрыта');
+			$query->where('status', '!=', 'closed');
 		}
 
 		// Применяем сортировку
