@@ -2,7 +2,13 @@
 
 @section('content')
 	<div class="header-container">
-		<h2 class="page-title">Мои заявки</h2>
+		<h2 class="page-title">
+			@if (auth()->user()->isUser())
+			Мои заявки
+			@else
+			Все заявки
+			@endif
+		</h2>
 		<div class="controls-container">
 			<div class="sort-options">
 				<span>Сортировать:</span>
