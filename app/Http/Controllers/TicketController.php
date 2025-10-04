@@ -114,7 +114,7 @@ class TicketController extends Controller
 		$validated = $request->validate([
 			'status' => 'required|in:open,in_progress,closed',
 			'priority' => 'required|in:low,medium,high',
-			'assigned_to' => 'nullable|exists:users,id',
+			'assigned_by' => 'nullable|exists:users,id',
 		]);
 
 		$ticket->update($validated);
@@ -134,12 +134,27 @@ class TicketController extends Controller
 	{
 		$this->authorize('assign', $ticket);
 		$user = auth()->user();
-		if ($user->isTech() && !$ticket->assigned_to) {
-			$ticket->update(['assigned_to' => $user->id]);
+		if ($user->isTech() && is_null($ticket->assigned_by)) {
+			$ticket->update(['assigned_by' => $user->id]);
+			$ticket->update(['status' => 'in_progress']);
 			return redirect()->route('tickets.show', $ticket)
 							 ->with('success', 'Вы успешно назначили себя на эту заявку.');
 		}
 		return redirect()->back()->with('error', 'Не удалось назначить.');
+	}
+
+	public function close(Ticket $ticket)
+	{
+		$user = auth()->user();
+
+		if (!$user->isTech() || $ticket->assigned_by !== $user->id) {
+			abort(403);
+		}
+
+		$ticket->update(['status' => 'closed']);
+
+		return redirect()->route('tickets.show', $ticket)
+						 ->with('success', 'Заявка закрыта.');
 	}
 
 	public function __construct()
