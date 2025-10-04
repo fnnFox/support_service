@@ -27,8 +27,8 @@ Route::middleware('auth')->group(function () {
 
 	Route::resource('tickets', TicketController::class);
 
-	Route::put('/tickets/{ticket}/assign', [TicketController::class, 'assign'])
-		->name('tickets.assign');
+	Route::put('/tickets/{ticket}/assign', [TicketController::class, 'assign'])->name('tickets.assign');
+	Route::put('/tickets/{ticket}/close', [TicketController::class, 'close'])->name('tickets.close');
 
     Route::middleware('role:admin')->prefix('admin')->name('admin.')->group(function () {
         Route::get('/panel', [AdminController::class, 'panel'])->name('panel');
