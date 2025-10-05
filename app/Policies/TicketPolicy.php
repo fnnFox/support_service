@@ -66,6 +66,6 @@ class TicketPolicy
 
 	public function assign(User $user, Ticket $ticket): bool
 	{
-		return $user->role === 'tech' && is_null($ticket->assigned_to);
+		return $user->role === 'tech' && is_null($ticket->assigned_by);
 	}
 }
