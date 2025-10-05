@@ -35,11 +35,13 @@
 			<label for="category"><strong>Категория:</strong></label>
 			@if (auth()->user()->isAdmin() || auth()->user()->id === $ticket->created_by)
 				<select id="category" name="category" required>
-					<option value="hardware" {{ $ticket->category === 'hardware' ? 'selected' : '' }}>Железо</option>
-					<option value="software" {{ $ticket->category === 'software' ? 'selected' : '' }}>Софт</option>
+					<option value="hardware" {{ $ticket->category === 'hardware' ? 'selected' : '' }}>Оборудование</option>
+					<option value="software" {{ $ticket->category === 'software' ? 'selected' : '' }}>Программное обеспечение</option>
+					<option value="network" {{ $ticket->category === 'network' ? 'selected' : '' }}>Сетевые системы</option>
+					<option value="other" {{ $ticket->category === 'other' ? 'selected' : '' }}>Другое</option>
 				</select>
 			@else
-				<p>{{ $ticket->category }}</p>
+				<p>{{ $ticket->category_text }}</p>
 				<input type="hidden" name="category" value="{{ $ticket->category }}">
 			@endif
 		</div>
@@ -54,7 +56,7 @@
 					<option value="high" {{ $ticket->priority === 'high' ? 'selected' : '' }}>Высокий</option>
 				</select>
 			@else
-				<p>{{ $ticket->priority }}</p>
+				<p>{{ $ticket->priority_text }}</p>
 				<input type="hidden" name="priority" value="{{ $ticket->priority }}">
 			@endif
 		</div>
@@ -65,30 +67,30 @@
 			@if (auth()->user()->isAdmin())
 				<select id="status" name="status" required>
 					<option value="open" {{ $ticket->status === 'open' ? 'selected' : '' }}>Открыта</option>
-					<option value="in_progress" {{ $ticket->status === 'in_progress' ? 'selected' : '' }}>В работе</option>
+					<option value="in_progress" {{ $ticket->status === 'in_progress' ? 'selected' : '' }}>В процессе</option>
 					<option value="closed" {{ $ticket->status === 'closed' ? 'selected' : '' }}>Закрыта</option>
 				</select>
 			@else
-				<p>{{ $ticket->status }}</p>
+				<p>{{ $ticket->status_text }}</p>
 				<input type="hidden" name="status" value="{{ $ticket->status }}">
 			@endif
 		</div>
 
 		{{-- Ответственный --}}
 		<div class="form-group">
-			<label for="assigned_to"><strong>Ответственный:</strong></label>
+			<label for="assigned_by"><strong>Ответственный:</strong></label>
 			@if (auth()->user()->isAdmin())
-				<select id="assigned_to" name="assigned_to">
+				<select id="assigned_by" name="assigned_by">
 					<option value="">-- Назначить ответственного --</option>
 					@foreach ($techs as $tech)
-						<option value="{{ $tech->id }}" {{ $ticket->assigned_to === $tech->id ? 'selected' : '' }}>
+						<option value="{{ $tech->id }}" {{ $ticket->assigned_by === $tech->id ? 'selected' : '' }}>
 							{{ $tech->full_name }}
 						</option>
 					@endforeach
 				</select>
 			@else
 				<p>{{ $ticket->assignedTo->full_name ?? 'Не назначен' }}</p>
-				<input type="hidden" name="assigned_to" value="{{ $ticket->assigned_to }}">
+				<input type="hidden" name="assigned_by" value="{{ $ticket->assigned_by }}">
 			@endif
 		</div>
 

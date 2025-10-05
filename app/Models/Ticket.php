@@ -18,17 +18,25 @@ class Ticket extends Model
 
 	public function getStatusTextAttribute(): string {
 		return [
-			'open' => 'Открыта',
-			'in_progress' => 'В процессе',
-			'closed' => 'Закрыта',
+			'open'			=> 'Открыта',
+			'in_progress'	=> 'В процессе',
+			'closed'		=> 'Закрыта',
 		][$this->status] ?? 'Неизвестно';
 	}
 	public function getPriorityTextAttribute(): string {
 		return [
-			'low' => 'Низкий',
-			'medium' => 'Средний',
-			'high' => 'Высокий',
+			'low'		=> 'Низкий',
+			'medium'	=> 'Средний',
+			'high'		=> 'Высокий',
 		][$this->priority] ?? 'Неизвестно';
+	}
+	public function getCategoryTextAttribute(): string {
+		return [
+			'hardware'	=> 'Оборудование',
+			'software'	=> 'Программное обеспечение',
+			'network'	=> 'Сеть',
+			'other'		=> 'Другое',
+		][$this->category] ?? 'Неизвестно';
 	}
 
 	public function createdBy() {

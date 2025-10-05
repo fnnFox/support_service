@@ -11,9 +11,8 @@
 
 	<div class="ticket-info">
 		<p><strong>Описание:</strong> {{ $ticket->description }}</p>
-		<p><strong>Категория:</strong> {{ $ticket->category }}</p>
-		<p><strong>Приоритет:</strong> {{ $ticket->priority }}</p>
-
+		<p><strong>Категория:</strong> {{ $ticket->category_text }}</p>
+		<p><strong>Приоритет:</strong> {{ $ticket->priority_text }}</p>
 		<p><strong>Создал:</strong> {{ $ticket->createdBy->full_name ?? 'Неизвестно' }}</p>
 		<p><strong>Ответственный:</strong> {{ $ticket->assignedTo->full_name ?? 'Не назначен' }}</p>
 

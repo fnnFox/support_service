@@ -112,9 +112,11 @@ class TicketController extends Controller
 		}
 
 		$validated = $request->validate([
-			'status' => 'required|in:open,in_progress,closed',
-			'priority' => 'required|in:low,medium,high',
-			'assigned_by' => 'nullable|exists:users,id',
+			'title'			=> 'required|string|max:255',
+			'description'	=> 'required|string',
+			'status'		=> 'required|in:open,in_progress,closed',
+			'priority'		=> 'required|in:low,medium,high',
+			'assigned_by'	=> 'nullable|exists:users,id',
 		]);
 
 		$ticket->update($validated);
